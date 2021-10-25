@@ -1,0 +1,84 @@
+import React, { useState } from "react";
+import { Container, Button, Row, Col, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import Login from "./Login.js";
+import Register from "./Register.js";
+import { useHistory } from "react-router";
+import Navi from "../../HomePage/Navi";
+import Footer from "../../HomePage/Footer";
+const Auth = ({ auth }) => {
+	const history = useHistory();
+	let body;
+	let label;
+	label = (
+		<>
+			{auth == "login" && (
+				<>
+					{" "}
+					<span style={{ color: "#a749ff", fontWeight: 900 }}>
+						Login
+					</span>{" "}
+					<span>| </span>
+					<span
+						onClick={() => {
+							history.push("/register");
+						}}
+						style={{ fontWeight: 900 }}
+					>
+						{" "}
+						Register
+					</span>
+				</>
+			)}
+			{auth == "register" && (
+				<>
+					{" "}
+					<span
+						onClick={() => {
+							history.push("/login");
+						}}
+						style={{ fontWeight: 900 }}
+					>
+						Login
+					</span>
+					<span>| </span>
+					<span style={{ color: "#a749ff", fontWeight: 900 }}>
+						Register
+					</span>
+				</>
+			)}
+		</>
+	);
+	body = (
+		<>
+			{auth == "login" && <Login></Login>}
+			{auth == "register" && <Register></Register>}
+		</>
+	);
+	return (
+		<>
+			<Navi></Navi>
+			<Container fuild>
+				<Row className="justify-content-center mt-5">
+					<Col md={6}>
+						<div
+							style={{
+								textAlign: "center",
+								fontSize: 30,
+								cursor: "pointer",
+								fontFamily: "Poppins,sans-serif",
+							}}
+							className="mb-4"
+						>
+							{label}
+						</div>
+						{body}
+					</Col>
+				</Row>
+			</Container>
+			<Footer></Footer>
+		</>
+	);
+};
+
+export default Auth;
