@@ -1,20 +1,38 @@
 import React from "react";
-import { Card, Button, OverlayTrigger, Tooltip, Image } from "react-bootstrap";
+import {
+	Card,
+	Button,
+	OverlayTrigger,
+	Tooltip,
+	Image,
+	Nav,
+} from "react-bootstrap";
 import img1 from "../../img/shop_01.jpg";
 import { Link } from "react-router-dom";
 import "./Product.css";
 import { CartContext } from "../../Context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addCarts } from "../Cart/CartSlice";
+import { findOne } from "../Shop/ShopSlice";
 const Product = ({ product }) => {
-	const { id, image, name, desc, price } = product;
+	const { _id: id, avatar: image, name, desc, price } = product;
 	//React.useEffect(() => console.log(id));
 	let hover;
 	const { addCart } = React.useContext(CartContext);
 	hover = <>aaaaaaaaaaaaaa</>;
+	const dispatch = useDispatch();
+	const productDummy = useSelector((state) => state.shops.productDummy);
 	const add = (id) => {
 		//add cart
 		try {
 			console.log(id);
-			addCart(id);
+			const addProduct = productDummy.find((pro) => pro._id === id);
+			if (addProduct) {
+				const action = addCarts(addProduct);
+				dispatch(action);
+			}
+
+			//addCart(id);
 		} catch (error) {}
 	};
 	return (
@@ -27,20 +45,22 @@ const Product = ({ product }) => {
 				<div className="card-img-overlay rounded-0 product-overlay d-flex flex-row align-items-center justify-content-center">
 					<ul className="list-unstyled d-flex flex-row w-75 align-items-center justify-content-between ">
 						<li className="mt-2">
-							<a
+							<Nav.Link
 								className="btn btn-success text-white"
-								to="/shop-single/123456"
+								to={`/shop-single/${id}`}
+								as={Link}
 							>
 								<i className="far fa-heart" />
-							</a>
+							</Nav.Link>
 						</li>
 						<li>
-							<a
+							<Nav.Link
 								className="btn btn-success text-white mt-2"
-								href="shop-single.html"
+								to={`/shop-single/${id}`}
+								as={Link}
 							>
 								<i className="far fa-eye" />
-							</a>
+							</Nav.Link>
 						</li>
 						<li>
 							<a
@@ -86,7 +106,7 @@ const Product = ({ product }) => {
 							<i className="text-muted fa fa-star" />
 						</li>
 					</ul>
-					<p className="text-center mb-0">{price}</p>
+					<p className="text-center mb-0">{price} Đ</p>
 					{/* <Button variant="primary">Go somewhere</Button> */}
 				</Card.Body>
 			</Card>

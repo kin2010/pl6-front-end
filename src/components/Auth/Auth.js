@@ -3,13 +3,19 @@ import { Container, Button, Row, Col, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Login from "./Login.js";
 import Register from "./Register.js";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import Navi from "../../HomePage/Navi";
 import Footer from "../../HomePage/Footer";
+import { useContext } from "react";
+import { AuthContext } from "../../Context/AuthContext.js";
 const Auth = ({ auth }) => {
 	const history = useHistory();
 	let body;
 	let label;
+	const {
+		authState: { isAuthenticated },
+	} = useContext(AuthContext);
+	if (isAuthenticated) return <Redirect to="/shop" />;
 	label = (
 		<>
 			{auth == "login" && (
@@ -58,7 +64,7 @@ const Auth = ({ auth }) => {
 	return (
 		<>
 			<Navi></Navi>
-			<Container fuild>
+			<Container fuild="true">
 				<Row className="justify-content-center mt-5">
 					<Col md={6}>
 						<div

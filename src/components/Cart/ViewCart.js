@@ -8,41 +8,59 @@ import { Link } from "react-router-dom";
 import cart from "../../img/cart.png";
 import { useHistory } from "react-router";
 import { LinkedinFilled } from "@ant-design/icons";
+import { useSelector, useDispatch } from "react-redux";
+
+import {
+	addCarts,
+	removeAll,
+	removeCart,
+	decreaseCart,
+	increaseCart,
+} from "./CartSlice";
 const ViewCart = () => {
+	const cartDummy = useSelector((state) => state.carts.cartDummy);
 	const [total, setTotal] = React.useState(0);
+	const dispatch = useDispatch();
 	const {
 		cartState: { carts },
 		cartState,
 		increase_quatity,
 		decrease_quatity,
-		removeCart,
+
 		removeAllCart,
 	} = React.useContext(CartContext);
 	const history = useHistory();
 	React.useEffect(() => {
 		//total
 		let total = 0;
-		carts.map((item) => {
-			total += item.price * (cartState[item.id] || 1);
+		cartDummy.map((item) => {
+			total += item.product.price * item.quatity;
 		});
 		setTotal(total);
-	}, [carts, cartState]);
+	}, [cartDummy]);
 	const increase = (id) => {
-		increase_quatity(id);
+		// increase_quatity(id);
+		const action = increaseCart(id);
+		dispatch(action);
 	};
 	const decrease = (id) => {
-		decrease_quatity(id);
+		// decrease_quatity(id);
+		const action = decreaseCart(id);
+		dispatch(action);
 	};
 	const remove = (id) => {
-		removeCart(id);
+		// removeCart(id);
+		const action = removeCart(id);
+		dispatch(action);
 	};
 	const clear = () => {
-		removeAllCart();
+		const action = removeAll();
+		dispatch(action);
 	};
 	let body;
 	body = (
 		<>
-			{carts.length == 0 && (
+			{cartDummy.length == 0 && (
 				<>
 					<div className="align-items-center text-center my-5">
 						<div className="text-primary">
@@ -62,7 +80,7 @@ const ViewCart = () => {
 					</div>
 				</>
 			)}
-			{carts.length > 0 && (
+			{cartDummy.length > 0 && (
 				<>
 					<Table
 						striped
@@ -77,13 +95,13 @@ const ViewCart = () => {
 								<th>IMAGE</th>
 								<th>PRODUCT NAME</th>
 								<th>UNIT PRICE</th>
-								<th>QUATITY</th>
+								<th>QUANTITY</th>
 								<th>SUBTOTAL</th>
 								<th>ACTION</th>
 							</tr>
 						</thead>
 						<tbody>
-							{carts.map((cart, index) => {
+							{cartDummy.map((cart, index) => {
 								return (
 									<>
 										<tr>
@@ -92,16 +110,21 @@ const ViewCart = () => {
 												<a href="/product/1">
 													<img
 														className="img-fluid"
-														src={cart.image}
+														src={cart.product.avatar}
 														alt=""
 													/>
 												</a>
 											</td>
 											<td className="product-name">
-												<a href="/product/1">{cart.name}</a>
+												<a href="/product/1">{cart.product.name}</a>
 												<div className="cart-item-variation">
-													<span>Color: white</span>
-													<span>Size: x</span>
+													<span>
+														Category :{" "}
+														{cart.product.category.name}
+													</span>
+													<span>
+														Shop : {cart.product.shop.name}
+													</span>
 												</div>
 											</td>
 											<td className="product-price-cart">
@@ -110,7 +133,7 @@ const ViewCart = () => {
 														className="amount old"
 														style={{ fontWeight: 500 }}
 													>
-														{cart.price} Đ
+														{cart.product.price} Đ
 													</span>
 													{/* <span className="amount">€11.20</span> */}
 												</div>
@@ -123,20 +146,18 @@ const ViewCart = () => {
 													<div
 														className="quatity-icon text-white px-2 py-1 bg-success rounded-circle"
 														onClick={() => {
-															decrease(cart.id);
+															decrease(cart.product._id);
 														}}
 													>
 														<i className="fas fa-angle-double-left"></i>
 													</div>
 													<div style={{ fontSize: 15 }}>
-														<strong>
-															{cartState[cart.id] || 1}
-														</strong>
+														<strong>{cart.quatity}</strong>
 													</div>
 													<div
 														className="quatity-icon text-white px-2 py-1 bg-success rounded-circle"
 														onClick={() => {
-															increase(cart.id);
+															increase(cart.product._id);
 														}}
 													>
 														<i className="fas fa-angle-double-right"></i>
@@ -148,14 +169,14 @@ const ViewCart = () => {
 													className="mt-3"
 													style={{ fontWeight: 500 }}
 												>
-													{cart.price * (cartState[cart.id] || 1)}
+													{cart.product.price * cart.quatity}
 												</span>
 											</td>
 											<td className="product-remove">
 												<div
 													className="mt-3"
 													onClick={() => {
-														remove(cart.id);
+														remove(cart.product._id);
 													}}
 												>
 													<i className="fa fa-times"></i>

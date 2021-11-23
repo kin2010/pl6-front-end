@@ -60,7 +60,7 @@ const Navi = () => {
 							<Nav.Link to="/login" as={Link}>
 								Login
 							</Nav.Link>
-							<Nav.Link eventKey={2} href="#memes">
+							<Nav.Link eventKey={2} to="/admin/categories" as={Link}>
 								Logout
 							</Nav.Link>
 

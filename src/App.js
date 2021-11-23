@@ -16,51 +16,63 @@ import About from "./components/About";
 import ViewCart from "./components/Cart/ViewCart";
 import PublicRoute from "./Utils/PublicRoute";
 import Admin from "./components/Admin/Admin";
+import DefaultLayout from "../src/components/Admin/layout/layout";
 import Checkout from "./components/Cart/Checkout";
+import PrivateRoute from "./Utils/PrivateRoute";
 function App() {
 	return (
 		<>
-			<AuthContextProvider>
-				<CategoryContextProvider>
-					<CartContextProvider>
-						<Router>
-							<Switch>
-								{/* <Navi></Navi> */}
-								<Route exact path="/" component={Home}></Route>
-								<PublicRoute
-									exact
-									path="/login"
-									component={(props) => (
-										<Auth {...props} auth="login"></Auth>
-									)}
-								></PublicRoute>
-								<Route
-									exact
-									path="/register"
-									render={() => <Auth auth="register"></Auth>}
-								></Route>
-								<Route exact path="/shop" component={Shop}></Route>
-								<Route
-									exact
-									path="/viewcart"
-									component={ViewCart}
-								></Route>
-								<PublicRoute
-									exact
-									path="/about"
-									component={About}
-								></PublicRoute>
-								<Route path="/shop-single/:id">
-									<SingleProduct />
-								</Route>
-								<Route exact path="/admin" component={Admin}></Route>
-								{/* <Footer></Footer> */}
-								<Route exact path="/checkout" component={Checkout} />
-							</Switch>
-						</Router>
-					</CartContextProvider>
-				</CategoryContextProvider>
-			</AuthContextProvider>
+			<>
+				{" "}
+				<AuthContextProvider>
+					<CategoryContextProvider>
+						<CartContextProvider>
+							<Router>
+								<Switch>
+									{/* <Navi></Navi> */}
+									<Route exact path="/" component={Home}></Route>
+									<PublicRoute
+										exact
+										path="/login"
+										component={(props) => (
+											<Auth {...props} auth="login"></Auth>
+										)}
+									></PublicRoute>
+									<Route
+										exact
+										path="/register"
+										render={() => <Auth auth="register"></Auth>}
+									></Route>
+									<PrivateRoute
+										exact
+										path="/shop"
+										component={Shop}
+									></PrivateRoute>
+									<Route
+										exact
+										path="/viewcart"
+										component={ViewCart}
+									></Route>
+									<PublicRoute
+										exact
+										path="/about"
+										component={About}
+									></PublicRoute>
+									<Route exact path="/shop-single/:id">
+										<SingleProduct />
+									</Route>
+									<Route
+										path="/admin"
+										component={DefaultLayout}
+									></Route>
+									{/* <Footer></Footer> */}
+									<Route exact path="/checkout" component={Checkout} />
+								</Switch>
+							</Router>
+						</CartContextProvider>
+					</CategoryContextProvider>
+				</AuthContextProvider>
+			</>
 		</>
 	);
 }

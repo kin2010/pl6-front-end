@@ -127,9 +127,9 @@ body {
 	border-radius: 15px;
 	border: 1px solid #ebebeb;
 }
-ul {
+.ul-cart {
 	overflow-y: auto;
-	max-height: 300px;
+	max-height: 250px;
 }
 .single-shopping-cart {
 	position: relative;
@@ -226,4 +226,3 @@ ul {
 /* Extra large devices (large desktops, 1200px and up)*/
 @media (min-width: 1200px) {
 }
-

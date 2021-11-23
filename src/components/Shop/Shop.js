@@ -1,23 +1,32 @@
 import React, { useContext, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 import { CategoryContext } from "../../Context/CategoryContext";
 import Footer from "../../HomePage/Footer";
 import Header from "../../HomePage/Header";
+import { unwrapResult } from "@reduxjs/toolkit";
+
 import Navi from "../../HomePage/Navi";
 import Product from "../Product/Product";
 import "./Shop.css";
+import { useSelector, useDispatch } from "react-redux";
+import { getCategories } from "../Admin/components/Categories/CategoriesSlice";
+import { createProduct, getProduct, getShop } from "./ShopSlice";
+import Toasts from "../Toast/Toast.js";
 const Shop = () => {
 	const {
 		CategoryState: { products },
 	} = React.useContext(CategoryContext);
+	const productDummy = useSelector((state) => state.shops.productDummy);
 	const { Get_Category, Get_Product } = useContext(CategoryContext);
+	const dispactch = useDispatch();
 	useEffect(() => {
 		//category
 		try {
-			Get_Category();
-			Get_Product();
+			// Get_Category();
+			return Get_Product();
 		} catch (error) {}
 	}, []);
+	const categorie = useSelector((state) => state.categories.Dummydata);
 
 	const data = [
 		{
@@ -54,6 +63,7 @@ const Shop = () => {
 		},
 	];
 	let shop;
+
 	const a = {
 		id: 123,
 		image: "../../img/shop_01.jpg",
@@ -63,18 +73,55 @@ const Shop = () => {
 	};
 	shop = (
 		<>
-			{products === null && <>asdad</>}
-			{products.map((item) => {
+			{productDummy === null && <>asdad</>}
+			{productDummy.map((item, index) => {
 				return (
 					<>
-						<Col key={item.id}>
-							<Product product={item} />
-						</Col>
+						<div key={item.index}>
+							<Col>
+								<Product product={item} />
+							</Col>
+						</div>
 					</>
 				);
 			})}
 		</>
 	);
+	const isLoading = useSelector((state) => state.categories.isLoading);
+	let cate;
+	cate = (
+		<>
+			{isLoading && (
+				<Spinner
+					animation="border"
+					variant="success"
+					className="justify-content-center position-relative top-50 start-50"
+				/>
+			)}
+			{!isLoading && (
+				<>
+					{categorie.map((item, index) => {
+						return (
+							<>
+								<div key={item.index}>
+									<li className="pb-3">
+										<a
+											className="collapsed d-flex justify-content-between h3 text-decoration-none"
+											href="#"
+										>
+											{item.name}
+											<i className="pull-right fa fa-fw fa-chevron-circle-right mt-1"></i>
+										</a>
+									</li>
+								</div>
+							</>
+						);
+					})}
+				</>
+			)}
+		</>
+	);
+
 	return (
 		<>
 			<Navi></Navi>
@@ -111,17 +158,7 @@ const Shop = () => {
 									<i class="pull-right fa fa-fw fa-chevron-circle-right mt-1"></i>
 								</a>
 							</li> */}
-							{data.map((item) => (
-								<li className="pb-3" key={item._id}>
-									<a
-										className="collapsed d-flex justify-content-between h3 text-decoration-none"
-										href="#"
-									>
-										{item.name}
-										<i className="pull-right fa fa-fw fa-chevron-circle-right mt-1"></i>
-									</a>
-								</li>
-							))}
+							{cate}
 						</ul>
 					</Col>
 					<Col lg={9}>
@@ -199,6 +236,7 @@ const Shop = () => {
 						</Row>
 					</Col>
 				</Row>
+				<Toasts />
 			</Container>
 			<Footer></Footer>
 		</>

@@ -1,15 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import { Provider } from "react-redux";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@coreui/coreui/dist/css/coreui.min.css";
 import "font-awesome/css/font-awesome.min.css";
 import "bootstrap-social/bootstrap-social.css";
 import reportWebVitals from "./reportWebVitals";
+import store from "./app/store";
 
 ReactDOM.render(
 	<React.StrictMode>
-		<App />
+		<Provider store={store}>
+			<App />
+		</Provider>
 	</React.StrictMode>,
 	document.getElementById("root")
 );

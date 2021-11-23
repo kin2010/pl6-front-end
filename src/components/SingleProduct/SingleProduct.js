@@ -1,14 +1,66 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import img1 from "../../img/product_single_10.jpg";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { CategoryContext } from "../../Context/CategoryContext";
+import { LeftCircleFilled } from "@ant-design/icons";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "react-bootstrap";
+import { findOne } from "../Shop/ShopSlice";
+import Navi from "../../HomePage/Navi";
+import { CartContext } from "../../Context/CartContext";
+import { addCarts, addCartsQuantity } from "../Cart/CartSlice";
+import { AuthContext } from "../../Context/AuthContext";
+import Toasts from "../Toast/Toast";
 const SingleProduct = () => {
+	const { setShowToast } = useContext(AuthContext);
 	const { id } = useParams();
+	const dispatch = useDispatch();
+	const shops = useSelector((state) => state.shops.productDummy);
+	const product = useSelector((state) => state.shops.product);
+	const [quantity, setQuantity] = useState(1);
+	const {
+		CategoryState: { products },
+	} = useContext(CategoryContext);
+	// const [product, setproduct] = useState([]);
+
+	const { addCart } = React.useContext(CartContext);
+
+	const add = (id) => {
+		//add cart
+		try {
+			const addProduct = product;
+			if (addProduct) {
+				const action = addCartsQuantity({
+					product: addProduct,
+					quantity: quantity,
+				});
+
+				dispatch(action);
+			}
+			console.log("showtoast");
+			setShowToast({
+				show: true,
+				message: "Đã thêm vào giỏ hàng",
+				type: "success",
+			});
+			// console.log(id);
+			// addCart(id);
+		} catch (error) {}
+	};
+
 	React.useEffect(() => {
-		console.log(id);
+		// console.log(id);
+		// const a = products.find((pro) => pro.id === id);
+		// setproduct(a);
+		// console.log(product, products, id, a);
+		const action = findOne(id);
+		dispatch(action);
 	}, []);
 
 	return (
 		<>
+			<Navi></Navi>
+			<Toasts></Toasts>
 			<section className="bg-light">
 				<div className="container pb-5">
 					<div className="row">
@@ -16,7 +68,7 @@ const SingleProduct = () => {
 							<div className="card mb-3">
 								<img
 									className="card-img img-fluid"
-									src={img1}
+									src={product?.avatar ? product.avatar : img1}
 									alt="Card image cap"
 									id="product-detail"
 								/>
@@ -52,7 +104,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.avatar
+																	? product.avatar
+																	: img1
+															}
 															alt="Product Image 1"
 														/>
 													</a>
@@ -61,7 +117,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.avatar
+																	? product.avatar
+																	: img1
+															}
 															alt="Product Image 2"
 														/>
 													</a>
@@ -70,7 +130,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.avatar
+																	? product.avatar
+																	: img1
+															}
 															alt="Product Image 3"
 														/>
 													</a>
@@ -85,7 +149,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.avatar
+																	? product.avatar
+																	: img1
+															}
 															alt="Product Image 4"
 														/>
 													</a>
@@ -94,7 +162,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.avatar
+																	? product.avatar
+																	: img1
+															}
 															alt="Product Image 5"
 														/>
 													</a>
@@ -103,7 +175,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.avatar
+																	? product.avatar
+																	: img1
+															}
 															alt="Product Image 6"
 														/>
 													</a>
@@ -118,7 +194,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.image
+																	? product.image
+																	: img1
+															}
 															alt="Product Image 7"
 														/>
 													</a>
@@ -127,7 +207,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.image
+																	? product.image
+																	: img1
+															}
 															alt="Product Image 8"
 														/>
 													</a>
@@ -136,7 +220,11 @@ const SingleProduct = () => {
 													<a href="#">
 														<img
 															className="card-img img-fluid"
-															src={img1}
+															src={
+																product?.image
+																	? product.image
+																	: img1
+															}
 															alt="Product Image 9"
 														/>
 													</a>
@@ -166,8 +254,8 @@ const SingleProduct = () => {
 						<div className="col-lg-7 mt-5">
 							<div className="card">
 								<div className="card-body">
-									<h1 className="h2">Active Wear</h1>
-									<p className="h3 py-2">$25.00</p>
+									<h1 className="h2">{product?.name}</h1>
+									<p className="h3 py-2">{product?.price}</p>
 									<p className="py-2">
 										<i className="fa fa-star text-warning" />
 										<i className="fa fa-star text-warning" />
@@ -190,11 +278,17 @@ const SingleProduct = () => {
 									</ul>
 									<h6>Description:</h6>
 									<p>
-										Lorem ipsum dolor sit amet, consectetur adipiscing
-										elit, sed do eiusmod temp incididunt ut labore et
-										dolore magna aliqua. Quis ipsum suspendisse. Donec
-										condimentum elementum convallis. Nunc sed orci a
-										diam ultrices aliquet interdum quis nulla.
+										{product?.desc |
+										(
+											<div>
+												Lorem ipsum dolor sit amet, consectetur
+												adipiscing elit, sed do eiusmod temp
+												incididunt ut labore et dolore magna aliqua.
+												Quis ipsum suspendisse. Donec condimentum
+												elementum convallis. Nunc sed orci a diam
+												ultrices aliquet interdum quis nulla.
+											</div>
+										)}
 									</p>
 									<ul className="list-inline">
 										<li className="list-inline-item">
@@ -208,13 +302,14 @@ const SingleProduct = () => {
 									</ul>
 									<h6>Specification:</h6>
 									<ul className="list-unstyled pb-3">
-										<li>Lorem ipsum dolor sit</li>
+										{/* <li>Lorem ipsum dolor sit</li>
 										<li>Amet, consectetur</li>
 										<li>Adipiscing elit,set</li>
 										<li>Duis aute irure</li>
 										<li>Ut enim ad minim</li>
 										<li>Dolore magna aliqua</li>
-										<li>Excepteur sint</li>
+										<li>Excepteur sint</li> */}
+										Description
 									</ul>
 									<form method="GET">
 										<input
@@ -260,17 +355,22 @@ const SingleProduct = () => {
 												<ul className="list-inline pb-3">
 													<li className="list-inline-item text-right">
 														Quantity
-														<input
+														{/* <input
 															type="hidden"
 															name="product-quanity"
 															id="product-quanity"
-															defaultValue={1}
-														/>
+															defaultValue={quantity}
+															value={quantity}
+														/> */}
 													</li>
 													<li className="list-inline-item">
 														<span
 															className="btn btn-success"
 															id="btn-minus"
+															onClick={() =>
+																quantity > 1 &&
+																setQuantity(quantity - 1)
+															}
 														>
 															-
 														</span>
@@ -280,40 +380,47 @@ const SingleProduct = () => {
 															className="badge bg-secondary"
 															id="var-value"
 														>
-															1
+															{quantity}
 														</span>
 													</li>
 													<li className="list-inline-item">
-														<span
-															className="btn btn-success"
-															id="btn-plus"
+														<div
+															onClick={() =>
+																setQuantity(quantity + 1)
+															}
 														>
-															+
-														</span>
+															<span
+																className="btn btn-success"
+																id="btn-plus"
+															>
+																+
+															</span>
+														</div>
 													</li>
 												</ul>
 											</div>
 										</div>
 										<div className="row pb-3">
 											<div className="col d-grid">
-												<button
-													type="submit"
+												<Button
+													type="button"
 													className="btn btn-success btn-lg"
-													name="submit"
 													value="buy"
+													to="/shop"
+													as={Link}
 												>
-													Buy
-												</button>
+													Back
+												</Button>
 											</div>
 											<div className="col d-grid">
-												<button
-													type="submit"
+												<Button
 													className="btn btn-success btn-lg"
 													name="submit"
 													value="addtocard"
+													onClick={() => add(product?._id)}
 												>
 													Add To Cart
-												</button>
+												</Button>
 											</div>
 										</div>
 									</form>

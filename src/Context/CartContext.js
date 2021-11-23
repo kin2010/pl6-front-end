@@ -1,19 +1,23 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 import { CartReducer } from "../Ruducer/CartReducer";
 import { CategoryContext } from "./CategoryContext";
+import { useSelector, useDispatch } from "react-redux";
 export const CartContext = createContext();
 const CartContextProvider = ({ children }) => {
 	const [cartState, dispatch] = useReducer(CartReducer, {
 		carts: [],
 	});
-	const {
-		CategoryState: { products },
-	} = React.useContext(CategoryContext);
+
+	// const {
+	// 	CategoryState: { productDummy },
+	// } = React.useContext(CategoryContext);
+	const productDummy = useSelector((state) => state.shops.productDummy);
+
 	const addCart = (id) => {
 		try {
 			// Add cart
-			if (products) {
-				const cartAdd = products.find((item) => item.id === id);
+			if (productDummy) {
+				const cartAdd = productDummy.find((item) => item._id === id);
 				dispatch({ type: "ADD_CART", payload: cartAdd });
 				//console.log(cartAdd);
 			}
